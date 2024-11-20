@@ -3,17 +3,20 @@ from dishka.integrations.fastapi import inject
 from fastapi import APIRouter, UploadFile, Response
 from fastapi.responses import FileResponse
 
-from app.application.interactors.acst import DownloadAcstFileInteractor, UploadAcstFileInteractor
+from app.application.interactors.personal_naks_protocol import (
+    DownloadPersonalNaksProtocolFileInteractor, 
+    UploadPersonalNaksProtocolFileInteractor
+)
 
 
-acst_files_router = APIRouter(prefix="/acst")
+personal_naks_protocol_files_router = APIRouter(prefix="/personal-naks-protocol")
 
 
-@acst_files_router.post("/download/{filename}")
+@personal_naks_protocol_files_router.post("/download/{filename}")
 @inject
 async def download(
     filename: str,
-    get_path: FromDishka[DownloadAcstFileInteractor]
+    get_path: FromDishka[DownloadPersonalNaksProtocolFileInteractor]
 ) -> FileResponse:
     path = await get_path(filename)
 
@@ -24,11 +27,11 @@ async def download(
     )
 
 
-@acst_files_router.post("/upload/{filename}")
+@personal_naks_protocol_files_router.post("/upload/{filename}")
 @inject
 async def upload(
     filename: str,
-    upload_file: FromDishka[UploadAcstFileInteractor],
+    upload_file: FromDishka[UploadPersonalNaksProtocolFileInteractor],
     file: UploadFile
 ) -> Response:
     await upload_file(filename, file)
