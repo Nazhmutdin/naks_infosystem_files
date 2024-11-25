@@ -9,13 +9,13 @@ from app.application.interactors.acst import DownloadAcstFileInteractor, UploadA
 acst_files_router = APIRouter(prefix="/acst")
 
 
-@acst_files_router.post("/download/{filename}")
+@acst_files_router.get("/download/{acst_number}")
 @inject
 async def download(
-    filename: str,
+    acst_number: str,
     get_path: FromDishka[DownloadAcstFileInteractor]
 ) -> FileResponse:
-    path = await get_path(filename)
+    path = await get_path(acst_number)
 
     return FileResponse(
         path=path,
@@ -24,14 +24,14 @@ async def download(
     )
 
 
-@acst_files_router.post("/upload/{filename}")
+@acst_files_router.post("/upload/{acst_number}")
 @inject
 async def upload(
-    filename: str,
+    acst_number: str,
     upload_file: FromDishka[UploadAcstFileInteractor],
     file: UploadFile
 ) -> Response:
-    await upload_file(filename, file)
+    await upload_file(acst_number, file)
 
     return Response(
         "file successfully uploaded"
