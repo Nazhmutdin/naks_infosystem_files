@@ -2,6 +2,8 @@ from pathlib import Path
 
 from fastapi import UploadFile
 
+from app.application.interfaces.gateways import IPersonalNaksCertificationFilesGateway
+from app.application.dto import CreatePersonalNaksCertificationFilesDTO
 from app.application.common.exc import FileNotFound
 from app.utils.path_utils import get_personal_naks_certification_path
 from app.infrastructure.fs import save_fastapi_upload_binary_file
@@ -9,28 +11,40 @@ from app.infrastructure.fs import save_fastapi_upload_binary_file
 
 class DownloadPersonalNaksCertificationFileInteractor:
 
-    async def __call__(self, filename: str) -> Path:
-        path = get_personal_naks_certification_path(
-            filename=filename
-        )
+    def __init__(self, gateway: IPersonalNaksCertificationFilesGateway):
+        self.gateway = gateway
 
-        if not path.exists():
+
+    async def __call__(self, certification_number: str) -> Path:
+        cert = await self.gateway.get_by_certification_number(certification_number)
+
+        if not cert:
             raise FileNotFound(
                 mode="personal_naks_certification",
-                filename=filename
+                filename=certification_number
             )
+
+        path = get_personal_naks_certification_path(
+            filename=cert.ident.hex
+        )
         
         return path
 
 
 class UploadPersonalNaksCertificationFileInteractor:
 
+    def __init__(self, gateway: IPersonalNaksCertificationFilesGateway):
+        self.gateway = gateway
+
+
     async def __call__(
         self, 
-        filename: str,
+        data: CreatePersonalNaksCertificationFilesDTO,
         file: UploadFile
     ):
-        file_path = get_personal_naks_certification_path(filename=filename)
+        await self.gateway.insert(data)
+
+        file_path = get_personal_naks_certification_path(filename=data.ident.hex)
 
         await save_fastapi_upload_binary_file(
             file_path=file_path,

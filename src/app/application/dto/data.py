@@ -36,7 +36,7 @@ class UpdatePersonalNaksCertificationFilesDTO(PersonalNaksCertificationFilesDTO)
 @dataclass
 class PersonalNaksProtocolFilesDTO:
     ident: UUID
-    personal_number: str
+    protocol_number: str
 
 
 @dataclass
@@ -45,4 +45,4 @@ class CreatePersonalNaksProtocolFilesDTO(PersonalNaksProtocolFilesDTO): ...
 
 @dataclass
 class UpdatePersonalNaksProtocolFilesDTO(PersonalNaksProtocolFilesDTO): 
-    personal_number: str | None
+    protocol_number: str | None

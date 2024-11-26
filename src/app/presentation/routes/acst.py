@@ -1,9 +1,13 @@
+from uuid import UUID, uuid4
+from typing import Annotated
+
 from dishka import FromDishka
 from dishka.integrations.fastapi import inject
-from fastapi import APIRouter, UploadFile, Response
+from fastapi import APIRouter, UploadFile, Response, Query
 from fastapi.responses import FileResponse
 
 from app.application.interactors.acst import DownloadAcstFileInteractor, UploadAcstFileInteractor
+from app.application.dto import CreateAcstFilesDTO
 
 
 acst_files_router = APIRouter(prefix="/acst")
@@ -24,14 +28,21 @@ async def download(
     )
 
 
-@acst_files_router.post("/upload/{acst_number}")
+@acst_files_router.post("/upload")
 @inject
 async def upload(
-    acst_number: str,
+    ident: Annotated[UUID, Query(default_factory=uuid4)],
+    acst_number: Annotated[str, Query()],
     upload_file: FromDishka[UploadAcstFileInteractor],
     file: UploadFile
 ) -> Response:
-    await upload_file(acst_number, file)
+    
+    data = CreateAcstFilesDTO(
+        ident=ident,
+        acst_number=acst_number
+    )
+    
+    await upload_file(data, file)
 
     return Response(
         "file successfully uploaded"

@@ -26,4 +26,4 @@ class PersonalNaksProtocolFilesModel(Base):
     __tablename__ = "personal_naks_protocol_files_table"
 
     ident: Mapped[uuid.UUID] = sa.Column(sa.UUID(as_uuid=True), primary_key=True, nullable=False, default=uuid.uuid4)
-    personal_number: Mapped[str] = sa.Column(sa.String(), nullable=False)
+    protocol_number: Mapped[str] = sa.Column(sa.String(), nullable=False)

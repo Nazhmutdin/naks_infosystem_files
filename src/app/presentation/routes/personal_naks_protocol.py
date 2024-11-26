@@ -1,12 +1,16 @@
+from uuid import UUID, uuid4
+from typing import Annotated
+
 from dishka import FromDishka
 from dishka.integrations.fastapi import inject
-from fastapi import APIRouter, UploadFile, Response
+from fastapi import APIRouter, UploadFile, Response, Query
 from fastapi.responses import FileResponse
 
 from app.application.interactors.personal_naks_protocol import (
     DownloadPersonalNaksProtocolFileInteractor, 
     UploadPersonalNaksProtocolFileInteractor
 )
+from app.application.dto import CreatePersonalNaksProtocolFilesDTO
 
 
 personal_naks_protocol_files_router = APIRouter(prefix="/personal-naks-protocol")
@@ -28,14 +32,20 @@ async def download(
     )
 
 
-@personal_naks_protocol_files_router.post("/upload/{protocol_number}")
+@personal_naks_protocol_files_router.post("/upload")
 @inject
 async def upload(
-    protocol_number: str,
+    ident: Annotated[UUID, Query(default_factory=uuid4)],
+    protocol_number: Annotated[str, Query()],
     upload_file: FromDishka[UploadPersonalNaksProtocolFileInteractor],
     file: UploadFile
 ) -> Response:
-    await upload_file(protocol_number, file)
+    
+    data = CreatePersonalNaksProtocolFilesDTO(
+        ident=ident,
+        protocol_number=protocol_number
+    )
+    await upload_file(data, file)
 
     return Response(
         "file successfully uploaded"

@@ -1,12 +1,16 @@
+from uuid import UUID, uuid4
+from typing import Annotated
+
 from dishka import FromDishka
 from dishka.integrations.fastapi import inject
-from fastapi import APIRouter, UploadFile, Response
+from fastapi import APIRouter, UploadFile, Response, Query
 from fastapi.responses import FileResponse
 
 from app.application.interactors.personal_naks_certification import (
     DownloadPersonalNaksCertificationFileInteractor, 
     UploadPersonalNaksCertificationFileInteractor
 )
+from app.application.dto import CreatePersonalNaksCertificationFilesDTO
 
 
 personal_naks_certification_files_router = APIRouter(prefix="/personal-naks-certification")
@@ -27,14 +31,20 @@ async def download(
     )
 
 
-@personal_naks_certification_files_router.post("/upload/{certification_number}")
+@personal_naks_certification_files_router.post("/upload")
 @inject
 async def upload(
-    certification_number: str,
+    ident: Annotated[UUID, Query(default_factory=uuid4)],
+    certification_numbers: Annotated[list[str], Query()],
     upload_file: FromDishka[UploadPersonalNaksCertificationFileInteractor],
     file: UploadFile
 ) -> Response:
-    await upload_file(certification_number, file)
+    
+    data = CreatePersonalNaksCertificationFilesDTO(
+        ident=ident,
+        certification_numbers=certification_numbers
+    )
+    await upload_file(data, file)
 
     return Response(
         "file successfully uploaded"
