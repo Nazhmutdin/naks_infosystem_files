@@ -18,6 +18,8 @@ uvicorn = "^0.32.0"
 orjson = "^3.10.11"
 python-multipart = "^0.0.17"
 python-dotenv = "^1.0.1"
+sqlalchemy = "^2.0.36"
+naks-library = {git = "https://github.com/Nazhmutdin/naks_library.git"}
 
 [tool.poetry.group.dev.dependencies]
 pytest-asyncio = "^0.24.0"
