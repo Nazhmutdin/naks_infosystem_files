@@ -6,14 +6,14 @@ from dishka.integrations.fastapi import inject
 from fastapi import APIRouter, UploadFile, Response, Query
 from fastapi.responses import FileResponse
 
-from app.application.interactors.acst import DownloadAcstFileInteractor, UploadAcstFileInteractor
-from app.application.dto import CreateAcstFilesDTO
+from app.application.interactors.acst import DownloadAcstFileInteractor, UploadAcstFileInteractor, GetAcstFileDataByNumberInteractor
+from app.application.dto import CreateAcstFilesDTO, AcstFilesDTO
 
 
 acst_files_router = APIRouter(prefix="/acst")
 
 
-@acst_files_router.get("/download/{acst_number}")
+@acst_files_router.get("/{acst_number}/download")
 @inject
 async def download(
     acst_number: str,
@@ -28,7 +28,18 @@ async def download(
     )
 
 
-@acst_files_router.post("/upload")
+@acst_files_router.get("/by-number/{acst_number}")
+@inject
+async def get_file_data_by_number(
+    acst_number: str,
+    get: FromDishka[GetAcstFileDataByNumberInteractor]
+) -> AcstFilesDTO:
+    return await get(
+        acst_number=acst_number
+    )
+
+
+@acst_files_router.post("/")
 @inject
 async def upload(
     ident: Annotated[UUID, Query(default_factory=uuid4)],

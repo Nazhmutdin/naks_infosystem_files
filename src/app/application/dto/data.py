@@ -21,7 +21,7 @@ class UpdateAcstFilesDTO(AcstFilesDTO):
 @dataclass
 class PersonalNaksCertificationFilesDTO:
     ident: UUID
-    certification_numbers: list[str]
+    certification_number: str
 
 
 @dataclass
@@ -30,7 +30,7 @@ class CreatePersonalNaksCertificationFilesDTO(PersonalNaksCertificationFilesDTO)
 
 @dataclass
 class UpdatePersonalNaksCertificationFilesDTO(PersonalNaksCertificationFilesDTO): 
-    certification_numbers: list[str] | None
+    certification_number: str | None
 
 
 @dataclass

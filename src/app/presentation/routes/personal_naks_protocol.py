@@ -8,15 +8,16 @@ from fastapi.responses import FileResponse
 
 from app.application.interactors.personal_naks_protocol import (
     DownloadPersonalNaksProtocolFileInteractor, 
-    UploadPersonalNaksProtocolFileInteractor
+    UploadPersonalNaksProtocolFileInteractor,
+    GetPersonalNaksProtocolFileDataByNumberInteractor
 )
-from app.application.dto import CreatePersonalNaksProtocolFilesDTO
+from app.application.dto import CreatePersonalNaksProtocolFilesDTO, PersonalNaksProtocolFilesDTO
 
 
 personal_naks_protocol_files_router = APIRouter(prefix="/personal-naks-protocol")
 
 
-@personal_naks_protocol_files_router.get("/download/{protocol_number}")
+@personal_naks_protocol_files_router.get("/{protocol_number}/download")
 @inject
 async def download(
     protocol_number: str,
@@ -32,7 +33,18 @@ async def download(
     )
 
 
-@personal_naks_protocol_files_router.post("/upload")
+@personal_naks_protocol_files_router.get("/by-number/{protocol_number}")
+@inject
+async def get_file_data_by_number(
+    protocol_number: str,
+    get: FromDishka[GetPersonalNaksProtocolFileDataByNumberInteractor]
+) -> PersonalNaksProtocolFilesDTO:
+    return await get(
+        protocol_number=protocol_number
+    )
+
+
+@personal_naks_protocol_files_router.post("/")
 @inject
 async def upload(
     ident: Annotated[UUID, Query(default_factory=uuid4)],

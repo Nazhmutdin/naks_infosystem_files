@@ -25,7 +25,7 @@ class BaseTestRoutes:
         file = open(file_path, "rb")
 
         res = client.post(
-            f"{self._base_endpoint_path}/upload",
+            f"{self._base_endpoint_path}",
             params=RootModel(data).model_dump(mode="json"),
             files={
                 "file": file
@@ -44,7 +44,7 @@ class BaseTestRoutes:
 
     def test_download(self, number: str):
         res = client.get(
-            f"{self._base_endpoint_path}/download/{number}"
+            f"{self._base_endpoint_path}/{number}/download"
         )
 
         res_checksum = self.compute_checksum(res.content)
@@ -56,10 +56,18 @@ class BaseTestRoutes:
 
     def test_not_found_file(self, number: str):
         res = client.get(
-            f"{self._base_endpoint_path}/download/{number}"
+            f"{self._base_endpoint_path}/{number}"
         )
         
         assert res.status_code == 404
+
+
+    def test_get_file_data(self, number: str):
+        res = client.get(
+            f"{self._base_endpoint_path}/by-number/{number}"
+        )
+        
+        assert res.status_code == 200
 
 
     def compute_checksum(self, data: str | bytes) -> str:

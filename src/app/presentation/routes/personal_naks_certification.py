@@ -8,15 +8,16 @@ from fastapi.responses import FileResponse
 
 from app.application.interactors.personal_naks_certification import (
     DownloadPersonalNaksCertificationFileInteractor, 
-    UploadPersonalNaksCertificationFileInteractor
+    UploadPersonalNaksCertificationFileInteractor,
+    GetPersonalNaksCertificationFileDataByNumberInteractor
 )
-from app.application.dto import CreatePersonalNaksCertificationFilesDTO
+from app.application.dto import CreatePersonalNaksCertificationFilesDTO, PersonalNaksCertificationFilesDTO
 
 
 personal_naks_certification_files_router = APIRouter(prefix="/personal-naks-certification")
 
 
-@personal_naks_certification_files_router.get("/download/{certification_number}")
+@personal_naks_certification_files_router.get("/{certification_number}/download")
 @inject
 async def download(
     certification_number: str,
@@ -31,18 +32,29 @@ async def download(
     )
 
 
-@personal_naks_certification_files_router.post("/upload")
+@personal_naks_certification_files_router.get("/by-number/{certification_number}")
+@inject
+async def get_file_data_by_number(
+    certification_number: str,
+    get: FromDishka[GetPersonalNaksCertificationFileDataByNumberInteractor]
+) -> PersonalNaksCertificationFilesDTO:
+    return await get(
+        certification_number=certification_number
+    )
+
+
+@personal_naks_certification_files_router.post("/")
 @inject
 async def upload(
     ident: Annotated[UUID, Query(default_factory=uuid4)],
-    certification_numbers: Annotated[list[str], Query()],
+    certification_number: Annotated[str, Query()],
     upload_file: FromDishka[UploadPersonalNaksCertificationFileInteractor],
     file: UploadFile
 ) -> Response:
     
     data = CreatePersonalNaksCertificationFilesDTO(
         ident=ident,
-        certification_numbers=certification_numbers
+        certification_number=certification_number
     )
     await upload_file(data, file)
 

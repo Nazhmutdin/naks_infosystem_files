@@ -44,13 +44,13 @@ class PersonalNaksCertificationFilesMapper(SqlAlchemyCrudMapper[PersonalNaksCert
     def _convert(self, data: PersonalNaksCertificationFilesModel):
         return PersonalNaksCertificationFilesDTO(
             ident=data.ident,
-            certification_numbers=data.certification_numbers
+            certification_number=data.certification_number
         )
 
 
     async def get_by_certification_number(self, certification_number) -> PersonalNaksCertificationFilesDTO | None:
         stmt = select(PersonalNaksCertificationFilesModel).where(
-            PersonalNaksCertificationFilesModel.certification_numbers.contains([certification_number])
+            PersonalNaksCertificationFilesModel.certification_number == certification_number
         )
 
         res = (await self.session.execute(stmt)).scalar_one_or_none()

@@ -39,7 +39,7 @@ def add_default_values():
 
     create_cert_dto = CreatePersonalNaksCertificationFilesDTO(
         ident=UUID(ident),
-        certification_numbers=["test_number"]
+        certification_number="test_number"
     )
 
     create_prot_dto = CreatePersonalNaksProtocolFilesDTO(

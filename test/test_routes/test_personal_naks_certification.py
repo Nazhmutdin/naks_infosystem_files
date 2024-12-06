@@ -15,7 +15,7 @@ class TestPersonalNaksCertificationRoutes(BaseTestRoutes):
 
         dto = CreatePersonalNaksCertificationFilesDTO(
             ident=uuid4(),
-            certification_numbers=["some_test_number"]
+            certification_number="some_test_number"
         )
 
         super().test_upload(
@@ -35,3 +35,7 @@ class TestPersonalNaksCertificationRoutes(BaseTestRoutes):
         super().test_not_found_file(
             number="not_existing_number"
         )
+
+    
+    def test_get_file_data(self):
+        super().test_get_file_data("some_test_number")

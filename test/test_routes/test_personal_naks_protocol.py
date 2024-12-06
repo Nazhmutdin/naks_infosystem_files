@@ -35,3 +35,7 @@ class TestPersonalNaksProtocolRoutes(BaseTestRoutes):
         super().test_not_found_file(
             number="not_existing_number"
         )
+
+    
+    def test_get_file_data(self):
+        super().test_get_file_data("some_test_number")
