@@ -1,9 +1,6 @@
-from uuid import uuid4
-
 from base_test_routes import BaseTestRoutes
 
 from app.config import AppConfig
-from app.application.dto import CreatePersonalNaksProtocolFilesDTO
 
 
 class TestPersonalNaksProtocolRoutes(BaseTestRoutes):
@@ -13,14 +10,9 @@ class TestPersonalNaksProtocolRoutes(BaseTestRoutes):
 
     def test_upload(self):
 
-        dto = CreatePersonalNaksProtocolFilesDTO(
-            ident=uuid4(),
-            protocol_number="some_test_number"
-        )
-
         super().test_upload(
             file_path=AppConfig.static_folder().parent / "base_file.pdf",
-            data=dto
+            number="some_test_number"
         )
     
 

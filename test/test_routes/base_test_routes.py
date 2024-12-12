@@ -4,7 +4,6 @@ from pathlib import Path
 from uuid import UUID
 
 import pytest
-from pydantic import RootModel
 
 from client import client
 
@@ -19,14 +18,13 @@ class BaseTestRoutes:
     _static_subfold_path: Path
 
 
-    def test_upload(self, file_path: Path, data: ICreateDTO):
+    def test_upload(self, file_path: Path, number: str):
         before_files_amount = len(os.listdir(self._static_subfold_path))
 
         file = open(file_path, "rb")
 
         res = client.post(
-            f"{self._base_endpoint_path}",
-            params=RootModel(data).model_dump(mode="json"),
+            f"{self._base_endpoint_path}/by-number/{number}/upload",
             files={
                 "file": file
             }
@@ -39,12 +37,16 @@ class BaseTestRoutes:
         assert res.status_code == 200
         assert (after_files_amount - before_files_amount) == 1
 
-        os.remove(self._static_subfold_path / f"{data.ident.hex}.pdf")
+        for file in os.listdir(self._static_subfold_path):
+            if file == "f6500b2b9a054e5a852fbb7b88efee8b.pdf":
+                continue
+            
+            os.remove(self._static_subfold_path / file)
 
 
     def test_download(self, number: str):
         res = client.get(
-            f"{self._base_endpoint_path}/{number}/download"
+            f"{self._base_endpoint_path}/by-number/{number}/download"
         )
 
         res_checksum = self.compute_checksum(res.content)
@@ -56,7 +58,7 @@ class BaseTestRoutes:
 
     def test_not_found_file(self, number: str):
         res = client.get(
-            f"{self._base_endpoint_path}/{number}"
+            f"{self._base_endpoint_path}/by-number/{number}"
         )
         
         assert res.status_code == 404

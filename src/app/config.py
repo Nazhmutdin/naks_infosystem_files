@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 
 if not os.getenv("MODE"):
-    load_dotenv(f"{Path(os.path.dirname(os.path.abspath(__file__))).parent.parent}/.dev.env")
+    load_dotenv(f"{Path(os.path.dirname(os.path.abspath(__file__))).parent.parent}/.dev.env", override=True)
 
 
 class DBConfig:
@@ -69,4 +69,4 @@ class AppConfig:
     @classmethod
     def personal_naks_protocol_folder(cls) -> Path:
         return cls.static_folder() / "personal_naks_protocol"
-    
+   

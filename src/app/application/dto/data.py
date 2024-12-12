@@ -1,16 +1,17 @@
-from uuid import UUID
+from uuid import UUID, uuid4
 
-from pydantic.dataclasses import dataclass
+from pydantic.dataclasses import dataclass, Field
 
 
 @dataclass
 class AcstFilesDTO:
-    ident: UUID
     acst_number: str
+    ident: UUID
 
 
 @dataclass
-class CreateAcstFilesDTO(AcstFilesDTO): ...
+class CreateAcstFilesDTO(AcstFilesDTO):
+    ident: UUID = Field(default_factory=uuid4)
 
 
 @dataclass
@@ -20,12 +21,13 @@ class UpdateAcstFilesDTO(AcstFilesDTO):
 
 @dataclass
 class PersonalNaksCertificationFilesDTO:
-    ident: UUID
     certification_number: str
+    ident: UUID
 
 
 @dataclass
-class CreatePersonalNaksCertificationFilesDTO(PersonalNaksCertificationFilesDTO): ...
+class CreatePersonalNaksCertificationFilesDTO(PersonalNaksCertificationFilesDTO):
+    ident: UUID = Field(default_factory=uuid4)
 
 
 @dataclass
@@ -35,12 +37,13 @@ class UpdatePersonalNaksCertificationFilesDTO(PersonalNaksCertificationFilesDTO)
 
 @dataclass
 class PersonalNaksProtocolFilesDTO:
-    ident: UUID
     protocol_number: str
+    ident: UUID
 
 
 @dataclass
-class CreatePersonalNaksProtocolFilesDTO(PersonalNaksProtocolFilesDTO): ...
+class CreatePersonalNaksProtocolFilesDTO(PersonalNaksProtocolFilesDTO):
+    ident: UUID = Field(default_factory=uuid4)
 
 
 @dataclass
