@@ -21,7 +21,10 @@ async def download(
     return FileResponse(
         path=path,
         filename=path.name,
-        media_type="application/pdf"
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f"inline; filename={path.name}"
+        }
     )
 
 
