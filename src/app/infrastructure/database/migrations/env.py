@@ -9,8 +9,6 @@ from alembic import context
 from app.config import DBConfig
 from app.infrastructure.database.models import Base
 
-print(DBConfig.DB_URL())
-
 target_metadata = Base.metadata
 
 config = context.config
